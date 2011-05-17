@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -48,9 +49,10 @@ public class CarAttribute extends AbstractAttribute
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator="CAR_SEQ", strategy=GenerationType.AUTO)
+    @GeneratedValue(generator="CAR_ATTR_SEQ", strategy=GenerationType.AUTO)
     private Long                id;
     @ManyToOne
+    @JoinColumn(name="CAR_ID", nullable=false)
     public Car                  parent;
     
     @Override

@@ -23,21 +23,16 @@
  */
 package org.jsf2jpa.entities;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Class implements CarModel functions
+ * Class implements HierarhyAttribute functions
  *
  * <br/>$LastChangedRevision:$
  * <br/>$LastChangedDate:$
@@ -45,8 +40,8 @@ import javax.persistence.Table;
  * @author ASementsov
  */
 @Entity
-@Table(name="CM")
-public class CarModel extends BaseEntity implements Serializable
+@Table(name="HIER_ATTR")
+public class HierarhyAttribute extends AbstractAttribute
 {
     /**
      * Subversion revision number it will be changed automatically when commited
@@ -55,13 +50,12 @@ public class CarModel extends BaseEntity implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator="CM_SEQ", strategy=GenerationType.AUTO)
-    private Long            id;
-    @OneToMany(mappedBy = "model", cascade=CascadeType.ALL)
-    private List<Car>       cars = new ArrayList<Car>();
+    @GeneratedValue(generator="HIER_ATTR_SEQ", strategy=GenerationType.AUTO)
+    private Long                id;
+    
     @ManyToOne
-    @JoinColumn(name="MF_ID", nullable=false)
-    private Manufacturer manufacturer;
+    @JoinColumn(name="HIER_ID", nullable=false)
+    private Hierarhy            parent;
 
     @Override
     public Long getId()
@@ -75,23 +69,13 @@ public class CarModel extends BaseEntity implements Serializable
         this.id = id;
     }
 
-    public List<Car> getCars()
+    public Hierarhy getParent()
     {
-        return cars;
+        return parent;
     }
 
-    public void setCars(List<Car> cars)
+    public void setParent(Hierarhy parent)
     {
-        this.cars = cars;
-    }
-
-    public Manufacturer getManufacturer()
-    {
-        return manufacturer;
-    }
-
-    public void setManufacturer(Manufacturer manufacturer)
-    {
-        this.manufacturer = manufacturer;
+        this.parent = parent;
     }
 }

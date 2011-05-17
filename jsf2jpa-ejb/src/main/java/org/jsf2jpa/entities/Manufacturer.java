@@ -53,7 +53,7 @@ public class Manufacturer extends BaseEntity implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator="CAR_SEQ", strategy=GenerationType.AUTO)
+    @GeneratedValue(generator="MANUF_SEQ", strategy=GenerationType.AUTO)
     private Long            id;
     @OneToMany(mappedBy = "manufacturer", cascade=CascadeType.ALL)
     private List<CarModel>  models = new ArrayList<CarModel>();

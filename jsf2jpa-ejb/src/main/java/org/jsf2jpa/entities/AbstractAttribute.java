@@ -45,7 +45,7 @@ import javax.persistence.TemporalType;
  */
 @MappedSuperclass
 @Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorColumn(name="DT_TYPE", discriminatorType= DiscriminatorType.STRING)
+@DiscriminatorColumn(name="DT_TYPE", discriminatorType=DiscriminatorType.STRING)
 public abstract class AbstractAttribute extends BaseEntity implements Serializable
 {
     /**

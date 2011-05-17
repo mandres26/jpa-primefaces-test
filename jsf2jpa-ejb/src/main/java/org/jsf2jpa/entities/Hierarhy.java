@@ -37,7 +37,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- * Class implements CarModel functions
+ * Class implements Hierarhy entity
  *
  * <br/>$LastChangedRevision:$
  * <br/>$LastChangedDate:$
@@ -45,8 +45,8 @@ import javax.persistence.Table;
  * @author ASementsov
  */
 @Entity
-@Table(name="CM")
-public class CarModel extends BaseEntity implements Serializable
+@Table(name="HIER")
+public class Hierarhy extends BaseEntity implements Serializable
 {
     /**
      * Subversion revision number it will be changed automatically when commited
@@ -55,13 +55,25 @@ public class CarModel extends BaseEntity implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator="CM_SEQ", strategy=GenerationType.AUTO)
-    private Long            id;
-    @OneToMany(mappedBy = "model", cascade=CascadeType.ALL)
-    private List<Car>       cars = new ArrayList<Car>();
+    @GeneratedValue(generator="HIER_SEQ", strategy=GenerationType.AUTO)
+    private Long                        id;
     @ManyToOne
-    @JoinColumn(name="MF_ID", nullable=false)
-    private Manufacturer manufacturer;
+    private Hierarhy                    parent;
+    @OneToMany(mappedBy = "parent", cascade=CascadeType.ALL)
+    @JoinColumn(name="PARENT_ID")
+    private List<Hierarhy>              children = new ArrayList<Hierarhy>();
+    @OneToMany(mappedBy = "parent", cascade=CascadeType.ALL)
+    private List<HierarhyAttribute>     attributes = new ArrayList<HierarhyAttribute>();
+
+    public List<Hierarhy> getChildren()
+    {
+        return children;
+    }
+
+    public void setChildren(List<Hierarhy> children)
+    {
+        this.children = children;
+    }
 
     @Override
     public Long getId()
@@ -75,23 +87,47 @@ public class CarModel extends BaseEntity implements Serializable
         this.id = id;
     }
 
-    public List<Car> getCars()
+    public Hierarhy getParent()
     {
-        return cars;
+        return parent;
     }
 
-    public void setCars(List<Car> cars)
+    public void setParent(Hierarhy parent)
     {
-        this.cars = cars;
+        this.parent = parent;
     }
 
-    public Manufacturer getManufacturer()
+    public List<HierarhyAttribute> getAttributes()
     {
-        return manufacturer;
+        return attributes;
     }
 
-    public void setManufacturer(Manufacturer manufacturer)
+    public void setAttributes(List<HierarhyAttribute> attributes)
     {
-        this.manufacturer = manufacturer;
+        this.attributes = attributes;
+    }
+    
+    public void addAttribute (HierarhyAttribute attr)
+    {
+        attr.setParent(this);
+        attributes.add(attr);
+    }
+
+    public void addAttributes (List<HierarhyAttribute> attrs)
+    {
+        for (HierarhyAttribute attr : attrs) {
+            addAttribute (attr);
+        }
+    }
+
+    public void removeAttribute (HierarhyAttribute attr)
+    {
+        int index = attributes.indexOf(attr);
+        if (index != -1) {
+            HierarhyAttribute a = attributes.get(index);
+            attributes.remove(index);
+            attr.setParent(null);
+            a.setParent(null);
+        }
     }
 }

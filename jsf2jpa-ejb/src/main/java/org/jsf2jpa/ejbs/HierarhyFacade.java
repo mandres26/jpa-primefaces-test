@@ -23,7 +23,9 @@
  */
 package org.jsf2jpa.ejbs;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -32,14 +34,12 @@ import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
-import org.jsf2jpa.entities.Car;
-import org.jsf2jpa.entities.CarAttribute;
-import org.jsf2jpa.entities.CarModel;
-import org.jsf2jpa.entities.Manufacturer;
+import org.jsf2jpa.entities.Hierarhy;
+import org.jsf2jpa.entities.HierarhyAttribute;
 import org.jsf2jps.utils.NamingConstants;
 
 /**
- * Class implements CarsFacade functions
+ * Class implements HierarhyFacade functions
  *
  * <br/>$LastChangedRevision:$
  * <br/>$LastChangedDate:$
@@ -48,7 +48,7 @@ import org.jsf2jps.utils.NamingConstants;
  */
 @Stateless
 @TransactionManagement(TransactionManagementType.BEAN)
-public class CarsFacade extends AbstractFacade<Car, CarAttribute>
+public class HierarhyFacade extends AbstractFacade<Hierarhy, HierarhyAttribute>
 {
     /**
      * Subversion revision number it will be changed automatically when commited
@@ -77,94 +77,72 @@ public class CarsFacade extends AbstractFacade<Car, CarAttribute>
         return userTx;
     }
     
-    private Manufacturer createManufacture (String name)
+    public HierarhyFacade()
     {
-        Manufacturer mf = new Manufacturer();
-        mf.setName(name);
-        return mf;
+        super(Hierarhy.class, HierarhyAttribute.class);
     }
     
-    private CarModel createModel (Manufacturer mf, String name)
-    {
-        CarModel cm = new CarModel();
-        cm.setName(name);
-        cm.setManufacturer(mf);
-        mf.getModels().add(cm);
-        return cm;
-    }
-
-    private Car createCar (String name, CarModel model)
-    {
-        Car car = new Car();
-        car.setName(name);
-        car.setModel(model);
-        model.getCars().add(car);
-        return car;
-    }
-    
-    /*
-     * Initial data
-     */
-    private static final String[] MODELS = {
-        "Antara",
-        "Astra",
-        "Corsa",
-        "Insignia",
-        "Zafira"
-    };
-
-    private static final String[] ATTRIBUTES = {
-        "Price",
-        "Weight",
-        "Length",
-    };
-
-    public CarsFacade()
-    {
-        super(Car.class, CarAttribute.class);
-    }
-
-    /**
-     * Function to produce initial table data for cars, manufactures and cars models
-     */
     public void initData ()
     {
-        /*
-         * Create initial data
-         */
-        Manufacturer mf = createManufacture("Opel");
-        for (String model : MODELS) {
-            CarModel m = createModel(mf, model);
+        if (hierarhies == null)
+            createHierarhies ();
 
-            /*
-             * Five cars for each model
-             */
-            for (int i=0;i<5;i++) {
-                Car car = createCar(model, m);
-
-                /*
-                 * attributes for each car
-                 */
-                Random rnd = new Random();
-                for (String attr : ATTRIBUTES) {
-                    CarAttribute a = new CarAttribute();
-                    a.setName(attr);
-                    a.setStringValue(String.valueOf(rnd.nextInt(99999)));
-                    a.setParent(car);
-                    car.getAttributes().add (a);
-                }
-            }
-        }
-        
         boolean flag = false;
-
         try {
             flag = beginTransaction();
-            getEntityManager().persist(mf);
+            
+            for (Hierarhy hier : hierarhies) {
+                getEntityManager().persist(hier);
+            }
+
             commitTransaction(flag);
         }
         catch (Exception ex) {
             throw (new EJBException(ex));
         }
     }
+    
+    /**
+     * Initial data
+     */
+    private static List<Hierarhy> hierarhies;
+    private static void addAttributes (Hierarhy hier)
+    {
+        for (int i=0;i<3;i++) {
+            HierarhyAttribute attr = new HierarhyAttribute();
+            attr.setName("Attr: " + i);
+            attr.setDateValue(new Date());
+            hier.addAttribute(attr);
+        }
+    }
+
+    private static void createHierarhies()
+    {
+        hierarhies = new ArrayList<Hierarhy>();
+
+        /*
+         * First level
+         */
+        for (int i=0;i<20;i++) {
+            Hierarhy hier = new Hierarhy();
+            hier.setName(i + " leaf");
+            addAttributes (hier);
+            /*
+             * Second level
+             */
+            for (int j=0;j<5;j++) {
+                Hierarhy hier1 = new Hierarhy();
+                hier1.setName(i + "." + j + " leaf");
+                hier1.setParent(hier);
+                addAttributes (hier1);
+                
+                for (int k=0;k<5;k++) {
+                    Hierarhy hier2 = new Hierarhy();
+                    hier2.setName(i + "." + j + "." + k + " leaf");
+                    hier2.setParent(hier1);
+                    addAttributes (hier2);
+                }
+            }
+        }
+     }
 }
