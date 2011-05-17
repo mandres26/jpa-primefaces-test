@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <f:view contentType="text/html">
+        <h:head>
+            <style type="text/css">
+                .ui-widget {
+                    font-size: 75%;
+                }
+
+                .themeMenu {
+                    overflow: auto;
+                    height:300px;
+                    width:200px;
+                }
+
+                div.view {
+                    overflow: auto;
+                    width: 100%;
+                    background-color: #000044;
+                    color: white;
+                    height: 100px;
+                }
+                div.content {
+                    background-color: white;
+                    color: red;
+                }
+                * html div.verticalScrollerContainerFix {
+                    float: left;
+                }
+                * html div.verticalScrollerContainer {
+                    width: 100%;
+                    height: 100%;
+                }
+            </style>
+
+            <!--
+                @author: ASementsov
+                Fix primefaces tree component "collapse/expand duplication" BUG
+                This file will be use my version of the tree.js file instead of primefaces
+            -->
+            <script type="text/javascript" src="jscript/tree.js"></script>
+            <script type="text/javascript" src="jscript/datatable.js"></script>
+
+            <script type="text/javascript" language="javascript">
+                function updateSomething (sourceName)
+                {
+                    PrimeFaces.ajax.AjaxRequest ({
+                        source:sourceName,
+                        update:sourceName});
+                }
+            </script>
+
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <title>
+                <ui:insert id="title" name="title"/>
+            </title>
+        </h:head>
+
+        <h:body>
+            <p:growl id="message" autoUpdate="true" sticky="true" showDetail="true" globalOnly="false"/>
+
+            <p:layout fullPage="true">
+                <p:layoutUnit position="north" size="75" header="Top" 
+                              resizable="false">
+                    <ui:insert id="top" name="top"/>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="200" header="Left" resizable="true" collapsible="true" >  
+                    <ui:insert id="left" name="left"/>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center" >  
+                    <ui:insert id="center" name="center"/>
+                </p:layoutUnit>
+            </p:layout>
+
+            <ui:insert id="additional" name="additional"/>
+        </h:body>
+    </f:view>
+</html>

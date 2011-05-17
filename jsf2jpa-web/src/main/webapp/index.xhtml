@@ -5,7 +5,12 @@
       xmlns:p="http://primefaces.prime.com.tr/ui"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>test primefaces application</title>
+        <title>Dynamic dataTable creation test page</title>
+        <!--
+            Fixes for primefaces 3.0-m1/m2
+        -->
+        <script type="text/javascript" src="jscript/tree.js"></script>
+        <script type="text/javascript" src="jscript/datatable.js"></script>
     </h:head>
     <f:view contentType="text/html">
         <h:body>
@@ -17,6 +22,9 @@
                         <p:commandButton image="ui-icon ui-icon-search" 
                                          update=":carForm"
                                          action="#{cars.buildCarsPanel}"/>
+                        <p:menuButton>
+                            
+                        </p:menuButton>
                     </p:toolbarGroup>
                 </p:toolbar>
             </h:form>

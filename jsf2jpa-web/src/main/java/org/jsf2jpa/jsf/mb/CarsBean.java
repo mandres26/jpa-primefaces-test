@@ -33,7 +33,6 @@ import javax.ejb.EJB;
 import javax.faces.application.Application;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import org.jsf2jpa.ejbs.CarsFacade;
@@ -64,7 +63,7 @@ public class CarsBean implements Serializable
     private static final String REV_NUMBER = "$Revision:$";
     public static final String BEAN_NAME = "cars";
     
-    public static final String PAGINATOR_TEMPLATE = "#{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}";
+    private static final String PAGINATOR_TEMPLATE = "#{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}";
     private static final String TABLE_VAR = "row";
     private static final String SELECTED_OBJECT = "#{%s.selectedObject['%s']}";
     private static final String PAGE_ZIZE = "#{%s.pageSize}";
@@ -154,11 +153,11 @@ public class CarsBean implements Serializable
         this.carsLazyPanel = carsLazyPanel;
     }
     
-    public void onRowSelect()
+    public void onRowSelect(SelectEvent ev)
     {
     }
     
-    public void onRowUnselect()
+    public void onRowUnselect(UnselectEvent ev)
     {
     }
     

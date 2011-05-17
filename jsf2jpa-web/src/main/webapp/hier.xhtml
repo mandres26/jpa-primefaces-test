@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <body>
+        <ui:composition template="./templates/tree-layout.xhtml">
+
+            <ui:define name="title">
+                Layout with Tree and datatable test page
+            </ui:define>
+
+            <ui:define name="top">
+                <h:form id="breadCrumb" prependId="false">
+                    <p:breadCrumb preview="true" previewWidth="24">
+                        <p:menuitem value="Home" url="/#" />
+                    </p:breadCrumb>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="left">
+                <h:form id="treePanel">
+                    <p:tree id="eqTree" widgetVar="eqTree"
+                            value="#{hier.rootNode}"
+                            var="node"
+                            dynamic="true"
+                            cache="false"
+                            selectionMode="single"
+                            selection="#{hier.selectedObject['hier']}"
+                            onSelectUpdate=":tablePanel:hierTable :tablePanel:attrTable"
+                            nodeSelectListener="#{hier.onNodeSelect}"
+                            style="border: 0">
+                        <p:treeNode type="default">
+                            <h:outputText value="#{node}" style="font-size: 10px;"/>
+                        </p:treeNode>
+                    </p:tree>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form id="tablePanel" prependId="false">
+                    <p:dataTable id="hierTable"
+                                 lazy="true"
+                                 paginator="true"
+                                 paginatorAlwaysVisible="false"
+                                 rows="4"
+                                 value="#{hier.childrenHierlazy}"
+                                 var="row"
+                                 style="width: 100%;height: 150px"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                                 selectionMode="single"
+                                 selection="#{hier.selectedObject['childHier']}"
+                                 onRowSelectUpdate="hierTable:hierTableToolbar"
+                                 onRowUnselectUpdate="hierTable:hierTableToolbar"
+                                 rowSelectListener="#{hier.onRowSelect}"
+                                 rowUnselectListener="#{hier.onRowUnselect}">
+                        <f:facet name="header">
+                            <p:toolbar id="hierTableToolbar">
+                                <p:toolbarGroup align="left" style="font-size: 10px">
+                                    <p:commandButton type="button" value="New..." 
+                                                     image="ui-icon-document"
+                                                     onclick="alert('New')"
+                                                     rendered="#{hier.selectedObject['hier'] != null}"/>
+                                    <p:commandButton type="button" value="#Edit..." 
+                                                     image="ui-icon-folder-open"
+                                                     onclick="alert('Edit')"
+                                                     rendered="#{hier.selectedObject['childHier'] != null}"/>
+                                    <p:commandButton type="button" value="Delete..." 
+                                                     image="ui-icon-trash"
+                                                     onclick="alert('Delete')"
+                                                     rendered="#{hier.selectedObject['childHier'] != null}"/>
+                                </p:toolbarGroup>
+                            </p:toolbar>
+                        </f:facet>
+                        
+                        <c:forEach items="#{userConfig.getTable('hierarhy').columns}" var="col">
+                            <c:choose> 
+                                <c:when test="#{col.filterOptionsExp != null}">
+                                    <p:column filterBy="#{col.filter}"
+                                              sortBy="#{col.sort}"
+                                              filterMatchMode="#{col.filterMatchMode}"
+                                              filterOptions="#{col.filterOptionsExp}"
+                                              filterStyle="#{col.filterStyle}"
+                                              headerText="#{bundle[col.name]}"
+                                              style="#{col.style}">
+                                        <h:outputText value="#{col.valueExpression}" style="#{col.textStyle}"/>
+                                    </p:column>
+                                </c:when>
+                                <c:otherwise>
+                                    <p:column filterBy="#{col.filter}"
+                                              sortBy="#{col.sort}"
+                                              filterMatchMode="#{col.filterMatchMode}"
+                                              filterStyle="#{col.filterStyle}"
+                                              headerText="#{bundle[col.name]}"
+                                              style="#{col.style}">
+                                        <h:outputText value="#{col.valueExpression}" style="#{col.textStyle}"/>
+                                    </p:column>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+
+            <ui:define name="additional">
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

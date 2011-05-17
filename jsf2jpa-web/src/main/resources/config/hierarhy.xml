@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
-    Document   : cars.xml
-    Created on : April 25, 2011, 1:52 PM
+    Document   : hierarhy.xml
+    Created on : May 17, 2011, 10:29 AM
     Author     : ASementsov
     Description:
-        Purpose of this document is define structure for required equipment table
+        Purpose of the document follows.
 -->
 <Table name="cars" row="row">
     <column name="id"
@@ -34,28 +35,27 @@
           style="width: 10%"
           value="#{row.wrappedObject.description}"/>
           
-     <column name="Price"
-          filter="row.attributes['Price']"
+     <column name="Attr_1"
+          filter="row.attributes['Attr_1']"
           filterMatchMode="contains"
           filterStyle="width: 100%"
           textStyle="font-size: 10px"
           style="width: 10%"
-          value="#{row.attributes['Price'].asString}"/>
+          value="#{row.attributes['Attr_1'].asString}"/>
           
-      <column name="Weight"
-          filter="row.attributes['Weight']"
+      <column name="Attr_2"
+          filter="row.attributes['Attr_2']"
           filterMatchMode="contains"
           filterStyle="width: 100%"
           textStyle="font-size: 10px"
           style="width: 10%"
-          value="#{row.attributes['Weight'].asString}"/>
+          value="#{row.attributes['Attr_2'].asString}"/>
           
-      <column name="Length"
-          filter="row.attributes['Length']"
+      <column name="Attr_3"
+          filter="row.attributes['Attr_3']"
           filterMatchMode="contains"
           filterStyle="width: 100%"
           textStyle="font-size: 10px"
           style="width: 10%"
-          value="#{row.attributes['Length'].asString}"/>
+          value="#{row.attributes['Attr_3'].asString}"/>
 </Table>
-
