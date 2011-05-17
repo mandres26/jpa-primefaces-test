@@ -81,6 +81,7 @@ public abstract class AbstractAttribute extends BaseEntity implements Serializab
 
     public void setDateValue(Date dateValue)
     {
+        setDataType(DataType.DATE);
         this.dateValue = dateValue;
     }
 
@@ -91,6 +92,7 @@ public abstract class AbstractAttribute extends BaseEntity implements Serializab
 
     public void setNumberValue(Number numberValue)
     {
+        setDataType(DataType.NUMBER);
         this.numberValue = numberValue;
     }
 
@@ -101,6 +103,7 @@ public abstract class AbstractAttribute extends BaseEntity implements Serializab
 
     public void setStringValue(String stringValue)
     {
+        setDataType(DataType.STRING);
         this.stringValue = stringValue;
     }
     
@@ -119,5 +122,14 @@ public abstract class AbstractAttribute extends BaseEntity implements Serializab
             default:
                 return null;
         }
+    }
+    
+    public String getAsString ()
+    {
+        Object ret = getAsObject();
+        if (ret != null)
+            return ret.toString();
+        else
+            return "";
     }
 }

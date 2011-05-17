@@ -28,10 +28,13 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJBException;
 
 import javax.persistence.EntityManager;
@@ -109,8 +112,13 @@ public abstract class AbstractFacade<T extends BaseEntity, A extends AbstractAtt
      */
     protected void setOrderBy (CriteriaQuery<T> cq, CriteriaBuilder builder, Root<T> from, String sortField, boolean descend)
     {
-        if (sortField != null)
+        if (sortField != null) {
+            sortField = sortField.replace("wrappedObject.", "");
+            if (sortField.indexOf('.') != -1 || sortField.indexOf('[') != -1)
+                return;
+
             cq.orderBy(descend ? builder.desc(from.get(sortField)) : builder.asc(from.get(sortField)));
+        }
     }
 
     /**
@@ -125,9 +133,34 @@ public abstract class AbstractFacade<T extends BaseEntity, A extends AbstractAtt
     @SuppressWarnings("rawtypes")
     protected void addSimpleFilter (CriteriaQuery cq, CriteriaBuilder builder, Path<T> from, EntityType<T> model, Map<String, ?> filters, List<Predicate> preList)
     {
+        Pattern numPat = Pattern.compile("<|>|=");
+        
         if (filters != null && filters.size() > 0) {
             for (String column : filters.keySet()) {
                 Object var = filters.get(column);
+                /*
+                 * Removes wrapped object definitions
+                 */
+                column = column.replace("wrappedObject.", "");
+
+                /*
+                 * If this is an attribute
+                 */
+                if (column.indexOf('[') != -1) {
+                    try {
+                        String attrName = column.substring(column.indexOf('[')+2, column.indexOf(']')-1);
+                        AbstractAttribute attr = attributesClass.newInstance();
+                        attr.setName(attrName);
+                        attr.setStringValue((String)var);
+                        addAttributeFilter(cq, builder, from, Arrays.asList(attr), NamingConstants.PARENT, preList);
+                    }
+                    catch (Exception ex) {
+                        throw (new EJBException(ex));
+                    }
+                    
+                    continue;
+                }
+
                 if (column.indexOf('.') != -1) {
                     /*
                      * This is not simple query because this field could become a reason for table join
@@ -188,9 +221,52 @@ public abstract class AbstractFacade<T extends BaseEntity, A extends AbstractAtt
                         continue;
                 }
                 else {
-                    if (var instanceof String && ((String)var).contains("%")) {
-                        Expression<String> literal = from.get(column);
-                        preList.add(builder.like(builder.lower(literal), var.toString().toLowerCase()));
+                    Path ptAttr = from.get(column);
+                    Class<?> cl = ptAttr.getJavaType();
+                    if (cl.equals(String.class)) {
+                        if (var instanceof String && ((String)var).contains("%")) {
+                            Expression<String> literal = from.get(column);
+                            preList.add(builder.like(builder.lower(literal), var.toString().toLowerCase()));
+                        }
+                    }
+                    else if (Number.class.isAssignableFrom(cl)) {
+                        Number numVar = 0;
+
+                        if (var instanceof String) {
+                            try {
+                                String vs = ((String)var).replaceAll(numPat.pattern(), "");
+                                if (!vs.isEmpty())
+                                    numVar = NumberFormat.getNumberInstance().parse(vs);
+                                else
+                                    continue;
+                            }
+                            catch (ParseException ex) {
+                                Logger.getLogger(AbstractFacade.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        else if (var instanceof Number) {
+                            numVar = (Number)var;
+                        }
+
+                        Matcher matcher = numPat.matcher((String)var);
+                        if (matcher.find()) {
+                            switch (matcher.group().charAt(0)) {
+                                case '<':
+                                    preList.add(builder.le(ptAttr, numVar));
+                                    break;
+
+                                case '>':
+                                    preList.add(builder.ge(ptAttr, numVar));
+                                    break;
+
+                                case '=':
+                                    preList.add(builder.equal(ptAttr, numVar));
+                                    break;
+                            }
+                        }
+                        else {
+                            preList.add(builder.equal(from.get(column), numVar));
+                        }
                     }
                     else {
                         preList.add(builder.equal(from.get(column), var));
@@ -215,7 +291,7 @@ public abstract class AbstractFacade<T extends BaseEntity, A extends AbstractAtt
     }
 
     /**
-     * Fucntion used to add subquery filter by entity attributes 
+     * Function used to add subquery filter by entity attributes 
      * @param cq - criteria query
      * @param builder - criteria query builder
      * @param from - root object
@@ -225,7 +301,7 @@ public abstract class AbstractFacade<T extends BaseEntity, A extends AbstractAtt
      */
     protected void addAttributeFilter (CriteriaQuery cq, 
                                        CriteriaBuilder builder, 
-                                       Root<T> from, 
+                                       Path<T> from, 
                                        List attributesFilter,
                                        String joinColumn,
                                        List<Predicate> preList)

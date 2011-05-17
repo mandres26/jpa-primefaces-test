@@ -24,8 +24,8 @@
 package org.jsf2jpa.ejbs;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.Resource;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -87,18 +87,8 @@ public class HierarhyFacade extends AbstractFacade<Hierarhy, HierarhyAttribute>
         if (hierarhies == null)
             createHierarhies ();
 
-        boolean flag = false;
-        try {
-            flag = beginTransaction();
-            
-            for (Hierarhy hier : hierarhies) {
-                getEntityManager().persist(hier);
-            }
-
-            commitTransaction(flag);
-        }
-        catch (Exception ex) {
-            throw (new EJBException(ex));
+        for (Hierarhy hier : hierarhies) {
+            create(hier);
         }
     }
     
@@ -108,10 +98,11 @@ public class HierarhyFacade extends AbstractFacade<Hierarhy, HierarhyAttribute>
     private static List<Hierarhy> hierarhies;
     private static void addAttributes (Hierarhy hier)
     {
-        for (int i=0;i<3;i++) {
+        Random rnd = new Random();
+        for (int i=0;i<4;i++) {
             HierarhyAttribute attr = new HierarhyAttribute();
-            attr.setName("Attr: " + i);
-            attr.setDateValue(new Date());
+            attr.setName("Attr_" + i);
+            attr.setStringValue(String.valueOf(rnd.nextInt(99999)));
             hier.addAttribute(attr);
         }
     }
@@ -123,7 +114,7 @@ public class HierarhyFacade extends AbstractFacade<Hierarhy, HierarhyAttribute>
         /*
          * First level
          */
-        for (int i=0;i<20;i++) {
+        for (int i=0;i<5;i++) {
             Hierarhy hier = new Hierarhy();
             hier.setName(i + " leaf");
             addAttributes (hier);
@@ -134,15 +125,19 @@ public class HierarhyFacade extends AbstractFacade<Hierarhy, HierarhyAttribute>
                 Hierarhy hier1 = new Hierarhy();
                 hier1.setName(i + "." + j + " leaf");
                 hier1.setParent(hier);
+                hier.getChildren().add(hier1);
                 addAttributes (hier1);
                 
                 for (int k=0;k<5;k++) {
                     Hierarhy hier2 = new Hierarhy();
                     hier2.setName(i + "." + j + "." + k + " leaf");
                     hier2.setParent(hier1);
+                    hier1.getChildren().add(hier2);
                     addAttributes (hier2);
                 }
             }
+            
+            hierarhies.add(hier);
         }
      }
 }
