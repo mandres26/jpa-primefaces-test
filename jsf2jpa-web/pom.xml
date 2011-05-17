@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>jsf2jpa</artifactId>
+    <groupId>org.jsf2jpa</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+    <groupId>org.jsf2jpa</groupId>
+    <artifactId>jsf2jpa-web</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>jsf2jpa-web Web App</name>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <jsf-api.version>2.1.0-SNAPSHOT</jsf-api.version>
+        <primefaces.version>3.0.M2-SNAPSHOT</primefaces.version>
+        <primefaces.theme.version>1.0.2-SNAPSHOT</primefaces.theme.version>
+        <junit.version>4.8.2</junit.version>
+        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
+    </properties>
+    
+    <repositories>
+        <!--
+            Primefaces repository
+        -->
+        <repository>
+            <id>prime-repo</id>
+            <name>Prime Technology Maven Repository</name>
+            <url>http://repository.prime.com.tr</url>
+            <layout>default</layout>
+        </repository>
+        <!--
+            Sun faces (Mojarra) repository
+        -->
+        <repository>
+            <id>mojarra-repo</id>
+            <name>Mojarra</name>
+            <url>http://download.java.net/maven/2</url>
+            <layout>default</layout>
+        </repository>
+        <!--
+            JUnit repository
+        -->
+        <repository>
+            <id>JUnit-repo</id>
+            <name>JUnit</name>
+            <url>http://repo1.maven.org/maven2/junit</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jsf2jpa-ejb</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.cssparser</groupId>
+            <artifactId>cssparser</artifactId>
+            <version>0.9.5</version>
+        </dependency>
+        <!--
+            JGraph (mxgraph)
+        -->
+        <dependency>
+            <groupId>com.mxgraph</groupId>
+            <artifactId>jgraph</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <!--
+            JSF security
+        -->
+        <dependency>
+            <groupId>com.groundside</groupId>
+            <artifactId>jsf-security</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!--
+            Java EE 6.0
+        -->
+        <dependency>
+            <groupId>net.sourceforge.barbecue</groupId>
+            <artifactId>barbecue</artifactId>
+            <version>1.5-beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-web-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+            JUnit
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- 
+            prime faces dependencies 
+        -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>aristo</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>cupertino</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>humanity</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>sunny</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>glass-x</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>dot-luv</artifactId>
+            <version>${primefaces.theme.version}</version>
+        </dependency>
+        <!--
+            Mojarra block
+        -->
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf-api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${jsf-api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--
+            Jstl API
+        -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax</groupId>
+                                    <artifactId>javaee-endorsed-api</artifactId>
+                                    <version>6.0</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <finalName>jsf2jpa-web</finalName>
+    </build>
+    <profiles>
+        <profile>
+            <id>endorsed</id>
+            <activation>
+                <property>
+                    <name>sun.boot.class.path</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <!-- javaee6 contains upgrades of APIs contained within the JDK itself.
+                                 As such these need to be placed on the bootclasspath, rather than classpath of the
+                                 compiler.
+                                 If you don't make use of these new updated API, you can delete the profile.
+                                 On non-SUN jdk, you will need to create a similar profile for your jdk, with the similar property as sun.boot.class.path in Sun's JDK.-->
+                            <compilerArguments>
+                                <bootclasspath>${settings.localRepository}/javax/javaee-endorsed-api/6.0/javaee-endorsed-api-6.0.jar${path.separator}${sun.boot.class.path}</bootclasspath>
+                            </compilerArguments>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax</groupId>
+                                <artifactId>javaee-endorsed-api</artifactId>
+                                <version>6.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
